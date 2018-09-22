@@ -1,0 +1,48 @@
+---
+
+- name: Install custom mandos.service unit
+  template:
+    src: 'etc/systemd/system/mandos.service.j2'
+    dest: '/etc/systemd/system/mandos.service'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  when: not mandos__avahi|bool
+  notify: [ 'Reload systemd units', 'Restart mandos' ]
+
+- name: Remove custom mandos.service unit
+  file:
+    path: '/etc/systemd/system/mandos.service'
+    state: 'absent'
+  when: mandos__avahi|bool
+  notify: [ 'Reload systemd units', 'Restart mandos' ]
+
+- name: Install required packages
+  package:
+    name: '{{ item }}'
+    state: 'present'
+  with_flattened:
+    - '{{ mandos__base_packages }}'
+    - '{{ mandos__packages }}'
+
+- name: Make sure that Ansible local facts directory exists
+  file:
+    path: '/etc/ansible/facts.d'
+    state: 'directory'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+
+- name: Save mandos facts
+  template:
+    src: 'etc/ansible/facts.d/mandos.fact.j2'
+    dest: '/etc/ansible/facts.d/mandos.fact'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  register: mandos_register_facts
+
+- name: Gather Ansible facts if needed
+  action: setup
+  when: mandos_register_facts|d() and
+        mandos_register_facts is changed

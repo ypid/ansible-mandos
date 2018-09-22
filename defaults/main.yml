@@ -1,0 +1,91 @@
+---
+# .. vim: foldmarker=[[[,]]]:foldmethod=marker
+
+# debops.mandos default variables [[[
+# ==========================================
+
+# .. contents:: Sections
+#    :local:
+#
+# .. include:: ../../../includes/global.rst
+
+
+# APT packages, version [[[
+# -------------------------
+
+# .. envvar:: mandos__base_packages [[[
+#
+# List of base APT packages to install.
+mandos__base_packages: [ 'mandos' ]
+
+                                                                   # ]]]
+# .. envvar:: mandos__packages [[[
+#
+# List of additional APT packages to install with Mandos.
+mandos__packages: []
+
+                                                                   # ]]]
+                                                                   # ]]]
+# Firewall configuration [[[
+# --------------------------
+
+# .. envvar:: mandos__allow_tcp [[[
+#
+# List of IP addresses or CIDR subnets that can connect to the Mandos server
+# TCP port. If this list is empty, everybody can connect to the port.
+mandos__allow_tcp: []
+                                                                   # ]]]
+                                                                   # ]]]
+# Mandos network options [[[
+# ---------------------------------
+
+# .. envvar:: mandos__network_host [[[
+#
+# List of network interface names or IP addresses on which Mandos should
+# listen for connections. By default, if :ref:`debops.ferm` firewall is enabled,
+# Mandos will listen on ``localhost`` and private IP addresses only.
+mandos__network_host: '{{ [ "_local_", "_site_" ]
+                                 if (ansible_local|d() and ansible_local.ferm|d() and
+                                     ansible_local.ferm.enabled|d() and
+                                     ansible_local.ferm.enabled|bool)
+                                 else [ "_local_" ] }}'
+
+                                                                   # ]]]
+# .. envvar:: mandos__port [[[
+#
+# The port on which the Mandos will listen for Mandos client connections.
+mandos__port: '19523'
+
+                                                                   # ]]]
+# .. envvar:: mandos__avahi [[[
+#
+# Weather Avahi should be used or not.
+mandos__avahi: True
+
+                                                                   # ]]]
+                                                                   # ]]]
+# Configuration for other Ansible roles [[[
+# -----------------------------------------
+
+# .. envvar:: mandos__etc_services__dependent_list [[[
+#
+# Configuration for the :ref:`debops.etc_services` Ansible role.
+mandos__etc_services__dependent_list:
+
+  - name: 'mandos'
+    port: '{{ mandos__port }}'
+
+                                                                   # ]]]
+# .. envvar:: mandos__ferm__dependent_rules [[[
+#
+# Configuration for the :ref:`debops.ferm` Ansible role.
+mandos__ferm__dependent_rules:
+
+  - name: 'mandos'
+    type: 'accept'
+    dport: '{{ mandos__port }}'
+    saddr: '{{ mandos__allow_tcp }}'
+    accept_any: True
+                                                                   # ]]]
+                                                                   # ]]]
+                                                                   # ]]]
