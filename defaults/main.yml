@@ -59,7 +59,7 @@ mandos__port: '19523'
                                                                    # ]]]
 # .. envvar:: mandos__avahi [[[
 #
-# Weather Avahi should be used or not.
+# Whether Avahi should be used or not.
 mandos__avahi: True
 
                                                                    # ]]]
