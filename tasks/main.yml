@@ -1,5 +1,8 @@
 ---
 
+- import_role:
+    name: 'secret'
+
 - name: Install custom mandos.service unit
   template:
     src: 'etc/systemd/system/mandos.service.j2'
@@ -33,7 +36,7 @@
     group: 'root'
     mode: '0755'
 
-- name: Save mandos facts
+- name: Save Mandos facts
   template:
     src: 'etc/ansible/facts.d/mandos.fact.j2'
     dest: '/etc/ansible/facts.d/mandos.fact'

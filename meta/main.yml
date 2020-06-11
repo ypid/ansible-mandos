@@ -1,18 +1,15 @@
 ---
 
-dependencies:
-
-  - role: debops.secret
-
 galaxy_info:
 
-  role_name: 'mandos'
+  company: 'DebOps'
   author: 'Robin Schneider'
   description: 'Install and manage the Mandos server'
-  company: 'DebOps'
-  license: 'GPL-3.0'
+  license: 'GPL-3.0-only'
   min_ansible_version: '2.3.0'
+
   platforms:
+
     - name: Ubuntu
       versions:
         - precise
@@ -22,6 +19,8 @@ galaxy_info:
       versions:
         - jessie
         - stretch
+        - buster
+
   galaxy_tags:
     - system
     - startup
